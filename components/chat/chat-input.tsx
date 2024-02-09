@@ -59,6 +59,18 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
 
   const { handleInputChange } = usePromptAndCommand()
 
+  const handleAutocomplete = async (value: string) => {
+    const response = await fetch("/api/autocomplete", {
+      body: JSON.stringify({ query: value }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    const json = await response.json()
+    console.log(`autocomplete: ${JSON.stringify(json)}`)
+  }
+
   const { filesToAccept, handleSelectDeviceFile } = useSelectFileHandler()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -181,7 +193,10 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
           placeholder={t(
             `Ask anything. Type "/" for prompts, "#" for files, and "!" for tools.`
           )}
-          onValueChange={handleInputChange}
+          onValueChange={value => {
+            handleInputChange(value)
+            handleAutocomplete(value)
+          }}
           value={userInput}
           minRows={1}
           maxRows={18}
