@@ -128,7 +128,16 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     if (!isTyping && event.key === "Enter" && !event.shiftKey) {
       event.preventDefault()
       setIsPromptPickerOpen(false)
-      handleSendMessage(userInput, chatMessages, false)
+
+      if (selectedSuggestion === -1) {
+        handleSendMessage(userInput, chatMessages, false)
+      } else if (selectedSuggestion > -1 && autoCompleteResult) {
+        handleSendMessage(
+          autoCompleteResult[selectedSuggestion].suggestion,
+          chatMessages,
+          false
+        )
+      }
     }
 
     if (
